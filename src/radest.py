@@ -6,8 +6,9 @@ import numpy as np
 
 def DoY(time_stamp):
 
-    base_time = np.datetime64(time_stamp, 'Y')
-    num_days  = int(np.floor((time_stamp - base_time)/np.timedelta64(1,'D')) + 1)
+    base_time = time_stamp.astype('datetime64[Y]')
+    delta_times = (time_stamp - base_time)
+    num_days  = (delta_times/np.timedelta64(1,'D')).astype(int) + 1
 
     return num_days
 
@@ -112,9 +113,25 @@ if __name__ == "__main__":
 
     # Test 1: DoY
     day = np.datetime64('2019-03-08')
+    print('=================================================')
+    print()
     print("Test no.1 - DoY applied to regular date")
     print()
     print("Date: %s" % str(day))
     print("Expected DoY: 67")
     print("Actual DoY:   %d" % DoY(day))
+    print()
 
+    # Test 2: Multi-date DoY
+    day = np.array([np.datetime64('2019-03-08') + np.timedelta64(i, 'D') for i in range(3)])
+    print('=================================================')
+    print()
+    print("Test no.2 - DoY applied to more regular dates")
+    print()
+    print("Date: %s" % str(day))
+    print("Expected DoY: 67, 68, 69")
+    print("Actual DoY:   %s" % str(DoY(day)))
+    print()
+
+    # Prepare to leave
+    print('=================================================')

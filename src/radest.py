@@ -25,7 +25,7 @@ def calcJD(time_stamp):
     mm = np.where(mm <= 2, mm+12, mm)
     A  = yy // 100
     B  = 2 - A + A//4
-    jd = np.floor(365.25*(yy + 4716)) + np.floor(30.6001*(mm+1)) + dd + B - 1524.5
+    jd = (np.floor(365.25*(yy + 4716)) + np.floor(30.6001*(mm+1)) + dd + B - 1524.5).astype(int)
 
     return jd
 
@@ -131,6 +131,16 @@ if __name__ == "__main__":
     print("Date: %s" % str(day))
     print("Expected DoY: 67, 68, 69")
     print("Actual DoY:   %s" % str(DoY(day)))
+    print()
+
+    # Test 3: Multi-date calcJD
+    day = np.array([np.datetime64('2019-03-08') + np.timedelta64(i, 'D') for i in range(3)])
+    print('=================================================')
+    print()
+    print("Test no.3 - calcJD applied to more regular dates")
+    print()
+    print("Date: %s" % str(day))
+    print("Actual DoY:   %s" % str(calcJD(day)))
     print()
 
     # Prepare to leave

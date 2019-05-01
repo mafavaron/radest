@@ -110,6 +110,9 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
         np.cos(lat * np.pi / 180.0) * np.cos(solar_declination) * (np.sin(omega2) - np.sin(omega1))
     )
 
+    # Zero-limit
+    ra = np.where(ra < 0., 0., ra)
+
     return ra
 
 

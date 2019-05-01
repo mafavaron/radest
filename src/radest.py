@@ -51,14 +51,17 @@ def calcJD(time_stamp):
 def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
 
     # Constants
-    SOLAR_CONSTANT = 1.e6 * 49.2/3600   # W/m2
+    SOLAR_CONSTANT = 1.e5 * 49.2/3600   # W/m2
 
     # Calcunate the day-in-year and solar declination
     doy = DoY(time_stamp)
     solar_declination = 0.409 * np.sin(2*np.pi /365 * doy - 1.39)
 
     # Compute Julian day
-    timenow = (time_stamp - np.datetime64(time_stamp, 'D'))/np.timedelta(3600.0,'s') - zone
+    day_start = np.array([np.datetime64(time_stamp[i], 'D') for i in range(len(time_stamp))])
+    one_hour  = np.timedelta64(3600,'s')
+    timenow   = (time_stamp - day_start)/one_hour
+    timenow   -= zone
     JD = calcJD(time_stamp)
 
     # Inverse squared relative distance factor for Su n -Earth
@@ -88,17 +91,18 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
     omega2 = omega + np.pi * t1 / 24.0
 
     # Adjust angular end points to exclude nighttime hours
-    omegaS = np.acos(-np.tan(lat * np.pi / 180.0) * np.tan(solar_declination))    # Sunset angle
-    if omega1 < -omegaS:
-        omega1 = -omegaS
-    if omega2 < -omegaS:
-        omega2 = -omegaS
-    if omega1 > omegaS:
-        omega1 = omegaS
-    if omega2 > omegaS:
-        omega2 = omegaS
-    if omega1 > omega2:
-        omega1 = omega2
+    omegaS = np.arccos(-np.tan(lat * np.pi / 180.0) * np.tan(solar_declination))    # Sunset angle
+    for i in range(len(omegaS)):
+        if omega1[i] < -omegaS[i]:
+            omega1[i] = -omegaS[i]
+        if omega2[i] < -omegaS[i]:
+            omega2[i] = -omegaS[i]
+        if omega1[i] > omegaS[i]:
+            omega1[i] = omegaS[i]
+        if omega2[i] > omegaS[i]:
+            omega2[i] = omegaS[i]
+        if omega1[i] > omega2[i]:
+            omega1[i] = omega2[i]
 
     # Compute extraterrestrial radiation
     ra = 12.0 / np.pi * SOLAR_CONSTANT * dr * (
@@ -141,6 +145,17 @@ if __name__ == "__main__":
     print()
     print("Date: %s" % str(day))
     print("Actual DoY:   %s" % str(calcJD(day)))
+    print()
+
+    # Test 4: Multi-date Extraterrestrial Radiation
+    day = np.array([np.datetime64('2019-03-08') + np.timedelta64(i, 'h') for i in range(24)])
+    print('=================================================')
+    print()
+    print("Test no.4 - Exraterrestrial Radiation computed on a day, hourlt step")
+    print()
+    Ra = ExtraterrestrialRadiation(day, 3600, 45.5, 9.5, 1.0)
+    for i in range(len(day)):
+        print("%s -> %f" % (str(day[i]), Ra[i]))
     print()
 
     # Prepare to leave

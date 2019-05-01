@@ -185,5 +185,17 @@ if __name__ == "__main__":
         print("%f -> %f" % (lat[i], Ra[0]))
     print()
 
+    # Test 7: Single-date Extraterrestrial Radiation, checking longitude effect, summer time, mid latitude, Northern
+    day = np.array([np.datetime64('2019-07-01T12:00:00')])
+    lon = [-180.0 + i for i in range(361)]
+    print('=================================================')
+    print()
+    print("Test no.7 - Exraterrestrial Radiation computed at noon, various longitudes, lat=45, on 01. 07. 2019")
+    print()
+    for i in range(len(lon)):
+        Ra = ExtraterrestrialRadiation(day, 3600, 45.0, lon[i], 0.0)
+        print("%f -> %f" % (lon[i], Ra[0]))
+    print()
+
     # Prepare to leave
     print('=================================================')

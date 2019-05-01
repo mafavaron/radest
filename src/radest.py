@@ -151,11 +151,23 @@ if __name__ == "__main__":
     day = np.array([np.datetime64('2019-03-08') + np.timedelta64(i, 'h') for i in range(24)])
     print('=================================================')
     print()
-    print("Test no.4 - Exraterrestrial Radiation computed on a day, hourlt step")
+    print("Test no.4 - Exraterrestrial Radiation computed on a day, hourly step")
     print()
     Ra = ExtraterrestrialRadiation(day, 3600, 45.5, 9.5, 1.0)
     for i in range(len(day)):
         print("%s -> %f" % (str(day[i]), Ra[i]))
+    print()
+
+    # Test 5: Single-date Extraterrestrial Radiation, checking latitude effect
+    day = np.array([np.datetime64('2019-03-08T12:00:00')])
+    lat = [-90.0 + i for i in range(181)]
+    print('=================================================')
+    print()
+    print("Test no.5 - Exraterrestrial Radiation computed at noon, various latitudes")
+    print()
+    for i in range(len(lat)):
+        Ra = ExtraterrestrialRadiation(day, 3600, lat[i], 9.5, 1.0)
+        print("%f -> %f" % (lat[i], Ra[0]))
     print()
 
     # Prepare to leave

@@ -56,6 +56,7 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
     # Calcunate the day-in-year and solar declination
     doy = DoY(time_stamp)
     solar_declination = 0.409 * np.sin(2*np.pi /365 * doy - 1.39)
+    print("Solar declination: %f" % solar_declination[0])
 
     # Compute Julian day
     day_start = np.array([np.datetime64(time_stamp[i], 'D') for i in range(len(time_stamp))])
@@ -63,28 +64,38 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
     timenow   = (time_stamp - day_start)/one_hour
     timenow   -= zone
     JD = calcJD(time_stamp)
+    print("Current time in hours: %f" % timenow[0])
+    print("Julian day: %d" % JD[0])
 
-    # Inverse squared relative distance factor for Su n -Earth
+    # Inverse squared relative distance factor for Sun-Earth
     dr = 1.0 + 0.033 * np.cos(2.0 * np.pi * doy / 365.0)
+    print("Sun-Earth coeff: %f" % dr[0])
 
     # Calculate geographical positioning parameters (with a "-" sign for longitudes, according to ASCE conventions)
     central_meridian_longitude = -zone * 15.0
     if central_meridian_longitude < 0.0:
         central_meridian_longitude += 360.0
+    print("Central meridian lon: %f" % central_meridian_longitude)
     local_longitude = -lon
     if local_longitude < 0.0:
         local_longitude += 360.0
+    print("Local lon: %f" % local_longitude)
 
     # Compute hour at mid of averaging time
     t1 = averaging_period / 3600.0
     t = timenow + zone + 0.5 * t1
+    print("Current time in hours: %f" % t[0])
 
     # Calculate seasonal correction for solar time
     b = 2.0 * np.pi * (doy - 81) / 364.0
     Sc = 0.1645 * np.sin(2.0 * b) - 0.1255 * np.cos(b) - 0.025 * np.sin(b)
+    print("Seasonal correction: %f" % Sc[0])
 
     # Solar time angle at midpoint of averaging time
-    omega = (np.pi / 12.0) * ((t + 0.06667 * (central_meridian_longitude - local_longitude) + Sc) - 12.0)
+    delta_lon = central_meridian_longitude - local_longitude
+    if delta_lon > 180.0:
+        delta_lon -= 360.0
+    omega = (np.pi / 12.0) * ((t + 0.06667 * delta_lon + Sc) - 12.0)
 
     # Solar time angle at beginning and end of averaging period
     omega1 = omega - np.pi * t1 / 24.0
@@ -92,6 +103,7 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
 
     # Adjust angular end points to exclude nighttime hours
     omegaS = np.arccos(-np.tan(lat * np.pi / 180.0) * np.tan(solar_declination))    # Sunset angle
+    print("Omega: %f - %f - (%f,%f)" % (omega[0],omegaS[0],omega1[0],omega2[0]))
     for i in range(len(omegaS)):
         if omega1[i] < -omegaS[i]:
             omega1[i] = -omegaS[i]
@@ -199,10 +211,10 @@ if __name__ == "__main__":
 
     # Test 8: Single-date Extraterrestrial Radiation, checking one longitude effect, summer time, mid latitude, Northern
     day = np.array([np.datetime64('2019-07-01T12:00:00')])
-    lon = 9.5
+    lon = 0.0008
     print('=================================================')
     print()
-    print("Test no.8 - Exraterrestrial Radiation computed at noon, various longitudes, lat=45, on 01. 07. 2019")
+    print("Test no.7 - Exraterrestrial Radiation computed at noon, various longitudes, lat=45, on 01. 07. 2019")
     print()
     Ra = ExtraterrestrialRadiation(day, 3600, 45.0, lon, 0.0)
     print("Expected: non-zero")

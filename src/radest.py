@@ -2,6 +2,7 @@
 
 import os
 import sys
+import math
 import numpy as np
 
 def DoY(time_stamp):
@@ -92,9 +93,16 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
     print("Seasonal correction: %f" % Sc[0])
 
     # Solar time angle at midpoint of averaging time
-    delta_lon = central_meridian_longitude - local_longitude
+    delta_lon = math.fabs(central_meridian_longitude - local_longitude) % 360.0
     if delta_lon > 180.0:
-        delta_lon -= 360.0
+        remainder = 360.0 - delta_lon
+    else:
+        remainder = delta_lon
+    if ((delta_lon > 0.0) and (delta_lon <= 180.0)) or ((delta_lon <= -180.0) and (delta_lon >= -360.0)):
+        sign =  1.0
+    else:
+        sign = -1.0
+    delta_lon = sign * remainder
     omega = (np.pi / 12.0) * ((t + 0.06667 * delta_lon + Sc) - 12.0)
 
     # Solar time angle at beginning and end of averaging period

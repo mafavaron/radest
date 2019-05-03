@@ -127,6 +127,13 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
     return ra
 
 
+def GlobalRadiation(ra, z):
+
+    rg = ra * (0.75 + 2.0e-5*z)
+
+    return rg
+
+
 if __name__ == "__main__":
 
     # Test 1: DoY
@@ -218,6 +225,20 @@ if __name__ == "__main__":
     Ra = ExtraterrestrialRadiation(day, 3600, 45.0, lon, 0.0)
     print("Expected: non-zero")
     print("%f -> %f" % (lon, Ra[0]))
+    print()
+
+    # Test 9: Single-date Global Radiation, checking height effect, summer time, mid latitude, Northern
+    day = np.array([np.datetime64('2019-07-01T12:00:00')])
+    lon = 0.0008
+    print('=================================================')
+    print()
+    print("Test no.7 - Exraterrestrial Radiation computed at noon, various longitudes, lat=45, on 01. 07. 2019")
+    print()
+    Ra = ExtraterrestrialRadiation(day, 3600, 45.0, 9.0, 0.0)
+    for i in range(20):
+        z = i * 100
+        Rg = GlobalRadiation(Ra, z)
+        print("%f -> %f" % (z, Rg[0]))
     print()
 
     # Prepare to leave

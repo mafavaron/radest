@@ -54,7 +54,7 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
     # Constants
     SOLAR_CONSTANT = 1.e5 * 49.2/3600   # W/m2
 
-    # Calcunate the day-in-year and solar declination
+    # Calculate the day-in-year and solar declination
     doy = DoY(time_stamp)
     solar_declination = 0.409 * np.sin(2*np.pi /365 * doy - 1.39)
 
@@ -87,14 +87,14 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
     # Solar time angle at midpoint of averaging time
     delta_lon = math.fabs(central_meridian_longitude - local_longitude) % 360.0
     if delta_lon > 180.0:
-        remainder = 360.0 - delta_lon
+        intermediate = 360.0 - delta_lon
     else:
-        remainder = delta_lon
+        intermediate = delta_lon
     if ((delta_lon > 0.0) and (delta_lon <= 180.0)) or ((delta_lon <= -180.0) and (delta_lon >= -360.0)):
         sign =  1.0
     else:
         sign = -1.0
-    delta_lon = sign * remainder
+    delta_lon = sign * intermediate
     omega = (np.pi / 12.0) * ((t + 0.06667 * delta_lon + Sc) - 12.0)
 
     # Solar time angle at beginning and end of averaging period

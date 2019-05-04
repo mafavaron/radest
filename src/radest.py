@@ -4,6 +4,17 @@
 #             global (inbound short-wave) solar radiation
 # given the station time stamps, geographical position and
 # height above ground.
+#
+# Original Fortran code from:
+#
+#   https://github.com/serv_terr/pbl_met
+#
+# This code's location:
+#
+#   https://github.com/mafavaron/radest
+#
+# This is open-source software, covered by the MIT license.
+# Copyright information and license text follow.
 
 # Copyright 2019 Mauri Favaron
 #

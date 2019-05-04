@@ -33,7 +33,22 @@
 import math
 import numpy as np
 
+
 def DoY(time_stamp):
+    """ Computes day-of-year.
+
+    Parameters
+    ----------
+
+    time_stamp : numpp.array(numpy.datetime64)
+        Vector, containing the time stamps to be processed.
+
+    Returns
+
+    numpy.array(int)
+        Vector, containing day of year for each input time stamps,
+        in same order.
+    """
 
     base_time = time_stamp.astype('datetime64[Y]')
     delta_times = (time_stamp - base_time)
@@ -43,6 +58,20 @@ def DoY(time_stamp):
 
 
 def calcJD(time_stamp):
+    """Computes the Julian Day
+
+    Parameters
+    ----------
+
+    time_stamp : numpp.array(numpy.datetime64)
+        Vector, containing the time stamps to be processed.
+
+    Returns
+
+    numpy.array(int)
+        Vector, containing the julian day for each input time stamps,
+        in same order.
+    """
 
     # Get date parts
     yy = time_stamp.astype('datetime64[Y]').astype(int) + 1970
@@ -59,25 +88,33 @@ def calcJD(time_stamp):
     return jd
 
 
-# Estimate of extraterrestrial solar radiation
-#
-# Input:
-#
-#    timeStamp        np.datetime64, identifying the initial instant to get radiation at
-#
-#    averagingPeriod  Integer, length of averaging period (s)
-#
-#    lat              Real, local latitude(degrees, positive northwards)
-#
-#    lon              Real, local longitude(degrees, positive eastwards)
-#
-#    zone             Integer, time zone number(hours, positive Eastwards, in range - 12 to 12)
-#
-# Output:
-#
-#    ra               Extraterrestrial radiation (W/m2)
-#
 def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
+    """Estimates extraterrestrial solar radiation by ASCE method
+
+    Parameters
+    ----------
+
+    timeStamp : numpy.array(numpy.datetime64)
+        Anticipated time stamp of period to get radiation at
+
+    averagingPeriod : int
+        Length of period (s)
+
+    lat : double
+        Local latitude(degrees, positive northwards)
+
+    lon : double
+        Local longitude(degrees, positive eastwards)
+
+    zone : int
+        Time zone number(hours, positive Eastwards, in range - 12 to 12)
+
+    Returns
+    -------
+
+    numpy.array(double)
+        Vector containing extraterrestrial radiation (W/m2)
+    """
 
     # Constants
     SOLAR_CONSTANT = 1.e5 * 49.2/3600   # W/m2
@@ -156,6 +193,23 @@ def ExtraterrestrialRadiation(time_stamp, averaging_period, lat, lon, zone):
 
 
 def GlobalRadiation(ra, z):
+    """Reduce extraterrestrial radiation to in-atmosphere value
+
+    Parameters
+    ----------
+
+    ra : numpy.array(double)
+        Estimate of extraterrestrial radiation (W/m2)
+
+    z : double
+        Height above mean sea level (m)
+
+    Returns
+    -------
+
+    numpy.array(double)
+        Estimate of global solar radiation (W/m2)
+    """
 
     rg = ra * (0.75 + 2.0e-5*z)
 

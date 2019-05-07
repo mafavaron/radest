@@ -25,10 +25,10 @@ if __name__ == "__main__":
     lon    = 0.
     fuse   = 0
     z      = 0.
-    time03 = np.array([np.datetime64('2019-03-21T00:00:00', 's')])
-    time06 = np.array([np.datetime64('2019-06-21T00:00:00', 's')])
-    time09 = np.array([np.datetime64('2019-09-21T00:00:00', 's')])
-    time12 = np.array([np.datetime64('2019-12-21T00:00:00', 's')])
+    time03 = np.array([np.datetime64('2019-03-21T12:00:00', 's')])
+    time06 = np.array([np.datetime64('2019-06-21T12:00:00', 's')])
+    time09 = np.array([np.datetime64('2019-09-21T12:00:00', 's')])
+    time12 = np.array([np.datetime64('2019-12-21T12:00:00', 's')])
     lon = 0
     fuse = 0
     lats   = [i-89 for i in range(179)]
